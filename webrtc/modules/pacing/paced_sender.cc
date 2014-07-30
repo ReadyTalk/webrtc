@@ -20,6 +20,18 @@
 #include "webrtc/system_wrappers/interface/critical_section_wrapper.h"
 #include "webrtc/system_wrappers/interface/trace_event.h"
 
+namespace ecovate {
+
+struct Listener {
+  virtual ~Listener() { }
+
+  virtual void onSendQueueEmpty() = 0;
+};
+
+Listener* listener = 0;
+
+} // namespace ecovate
+
 namespace {
 // Time limit in milliseconds between packet bursts.
 const int kMinPacketLimitMs = 5;
@@ -371,6 +383,9 @@ bool PacedSender::ShouldSendNextPacket(paced_sender::PacketList** packet_list) {
   if (!low_priority_packets_->empty()) {
     *packet_list = low_priority_packets_.get();
     return true;
+  }
+  if (ecovate::listener) {
+    ecovate::listener->onSendQueueEmpty();
   }
   return false;
 }

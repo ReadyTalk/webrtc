@@ -105,7 +105,12 @@ I420VideoFrame* VideoRenderFrames::FrameToRender() {
   FrameList::iterator iter = incoming_frames_.begin();
   while(iter != incoming_frames_.end()) {
     I420VideoFrame* oldest_frame_in_list = *iter;
-    if (oldest_frame_in_list->render_time_ms() <=
+#ifdef ECOVATE_NO_VIDEO_DELAY
+    bool delay = false;
+#else
+    bool delay = true;
+#endif
+    if ((! delay) || oldest_frame_in_list->render_time_ms() <=
         TickTime::MillisecondTimestamp() + render_delay_ms_) {
       // This is the oldest one so far and it's OK to render.
       if (render_frame) {

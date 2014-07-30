@@ -14,7 +14,11 @@
 namespace webrtc {
 
 VPMSimpleSpatialResampler::VPMSimpleSpatialResampler()
+#ifdef ECOVATE_NO_SCALING
+    : resampling_mode_(kNoRescaling),
+#else
     : resampling_mode_(kFastRescaling),
+#endif
       target_width_(0),
       target_height_(0),
       scaler_() {}
