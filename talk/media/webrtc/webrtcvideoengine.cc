@@ -1293,8 +1293,13 @@ bool WebRtcVideoEngine::CanSendCodec(const VideoCodec& requested,
     out->preference = requested.preference;
     out->params = requested.params;
     out->framerate = rtc::_min(requested.framerate, local_max->framerate);
+#ifdef ECOVATE_NO_SCALING
+    out->width = requested.width;
+    out->height = requested.height;
+#else
     out->width = 0;
-    out->height = 0;
+    out->height = 0;    
+#endif
     out->params = requested.params;
     out->feedback_params = requested.feedback_params;
 

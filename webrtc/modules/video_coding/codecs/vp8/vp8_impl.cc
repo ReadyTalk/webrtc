@@ -186,6 +186,7 @@ int VP8EncoderImpl::InitEncode(const VideoCodec* inst,
   config_->rc_target_bitrate = inst->startBitrate;  // in kbit/s
   temporal_layers_->ConfigureBitrates(inst->startBitrate, inst->maxBitrate,
                                       inst->maxFramerate, config_);
+#ifndef ECOVATE_USE_VP8_DEFAULTS
   // setting the time base of the codec
   config_->g_timebase.num = 1;
   config_->g_timebase.den = 90000;
@@ -253,6 +254,7 @@ int VP8EncoderImpl::InitEncode(const VideoCodec* inst,
   } else {
     config_->kf_mode = VPX_KF_DISABLED;
   }
+#endif // not ECOVATE_USE_VP8_DEFAULTS
   switch (inst->codecSpecific.VP8.complexity) {
     case kComplexityHigh:
       cpu_speed_ = -5;
