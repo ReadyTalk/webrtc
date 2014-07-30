@@ -226,12 +226,16 @@ class SrtpSession {
   sigslot::repeater3<uint32, SrtpFilter::Mode, SrtpFilter::Error>
       SignalSrtpError;
 
+  // This was previously private, but because it's not thread-safe, we
+  // need to make it public and call it from application code prior to
+  // opening several WebRTC peer connections in parallel:
+  static bool Init();
+
  private:
   bool SetKey(int type, const std::string& cs, const uint8* key, int len);
     // Returns send stream current packet index from srtp db.
   bool GetSendStreamPacketIndex(void* data, int in_len, int64* index);
 
-  static bool Init();
   void HandleEvent(const srtp_event_data_t* ev);
   static void HandleEventThunk(srtp_event_data_t* ev);
 

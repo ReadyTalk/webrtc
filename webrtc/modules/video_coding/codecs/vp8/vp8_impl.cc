@@ -445,6 +445,7 @@ int VP8EncoderImpl::InitEncode(const VideoCodec* inst,
                                    &configurations_[0], 0)) {
     return WEBRTC_VIDEO_CODEC_ERROR;
   }
+#ifndef ECOVATE_USE_VP8_DEFAULTS
   // setting the time base of the codec
   configurations_[0].g_timebase.num = 1;
   configurations_[0].g_timebase.den = 90000;
@@ -514,6 +515,7 @@ int VP8EncoderImpl::InitEncode(const VideoCodec* inst,
   } else {
     configurations_[0].kf_mode = VPX_KF_DISABLED;
   }
+#endif // not ECOVATE_USE_VP8_DEFAULTS
 
   // Allow the user to set the complexity for the base stream.
   switch (inst->codecSpecific.VP8.complexity) {

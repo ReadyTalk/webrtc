@@ -23,6 +23,18 @@
 #include "webrtc/system_wrappers/interface/field_trial.h"
 #include "webrtc/system_wrappers/interface/logging.h"
 
+namespace ecovate {
+
+struct Listener {
+  virtual ~Listener() { }
+
+  virtual void onSendQueueEmpty() = 0;
+};
+
+Listener* listener = 0;
+
+} // namespace ecovate
+
 namespace {
 // Time limit in milliseconds between packet bursts.
 const int64_t kMinPacketLimitMs = 5;
@@ -358,6 +370,10 @@ int32_t PacedSender::Process() {
     int padding_needed = padding_budget_->bytes_remaining();
     if (padding_needed > 0) {
       SendPadding(static_cast<size_t>(padding_needed));
+    }
+
+    if (ecovate::listener) {
+      ecovate::listener->onSendQueueEmpty();
     }
   }
   return 0;

@@ -72,10 +72,14 @@ uint32_t VideoRenderFrames::TimeToNextFrameRelease() {
   if (incoming_frames_.empty()) {
     return KEventMaxWaitTimeMs;
   }
+#ifdef ECOVATE_NO_VIDEO_DELAY
+  return 0;
+#else
   const int64_t time_to_release = incoming_frames_.front().render_time_ms() -
                                   render_delay_ms_ -
                                   TickTime::MillisecondTimestamp();
   return time_to_release < 0 ? 0u : static_cast<uint32_t>(time_to_release);
+#endif
 }
 
 int32_t VideoRenderFrames::SetRenderDelay(
