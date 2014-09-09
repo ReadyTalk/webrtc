@@ -48,6 +48,24 @@
 #error "Bogus include."
 #endif
 
+namespace ecovate {
+
+struct Listener {
+  virtual ~Listener() { }
+
+  virtual void incrementReferenceCount() = 0;
+
+  virtual void decrementReferenceCount() = 0;
+
+  virtual void onSendQueueEmpty() = 0;
+
+  virtual void onSendMedia() = 0;
+};
+
+extern Listener* listener;
+
+} // namespace ecovate
+
 namespace webrtc {
 class VideoCaptureModule;
 class VideoDecoder;
@@ -520,6 +538,8 @@ class WebRtcVideoMediaChannel : public rtc::MessageHandler,
   // aspect ratio
   int ratio_w_;
   int ratio_h_;
+  
+  ecovate::Listener* listener_;
 };
 
 }  // namespace cricket

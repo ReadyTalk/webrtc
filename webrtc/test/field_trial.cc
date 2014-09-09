@@ -30,7 +30,7 @@ std::map<std::string, std::string> field_trials_;
 
 namespace field_trial {
 std::string FindFullName(const std::string& trial_name) {
-  assert(field_trials_initiated_);
+  // assert(field_trials_initiated_);
   std::map<std::string, std::string>::const_iterator it =
       field_trials_.find(trial_name);
   if (it == field_trials_.end())
