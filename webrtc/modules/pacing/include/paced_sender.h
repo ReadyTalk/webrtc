@@ -19,6 +19,24 @@
 #include "webrtc/modules/interface/module.h"
 #include "webrtc/typedefs.h"
 
+namespace ecovate {
+
+struct Listener {
+  virtual ~Listener() { }
+
+  virtual void incrementReferenceCount() = 0;
+
+  virtual void decrementReferenceCount() = 0;
+
+  virtual void onSendQueueEmpty() = 0;
+
+  virtual void onSendMedia() = 0;
+};
+
+extern Listener* listener;
+
+} // namespace ecovate
+
 namespace webrtc {
 class BitrateProber;
 class Clock;
@@ -159,6 +177,8 @@ class PacedSender : public Module {
 
   rtc::scoped_ptr<paced_sender::PacketQueue> packets_ GUARDED_BY(critsect_);
   uint64_t packet_counter_;
+
+  ecovate::Listener* listener_;
 };
 }  // namespace webrtc
 #endif  // WEBRTC_MODULES_PACING_INCLUDE_PACED_SENDER_H_

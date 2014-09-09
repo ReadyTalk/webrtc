@@ -175,6 +175,7 @@ VCMEncodedFrame* VCMReceiver::FrameForDecoding(uint16_t max_wait_time_ms,
       timing_->IncomingTimestamp(frame_timestamp, last_packet_time_ms);
     }
   }
+
   return frame;
 }
 

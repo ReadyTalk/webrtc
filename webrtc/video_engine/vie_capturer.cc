@@ -345,6 +345,10 @@ void ViECapturer::OnIncomingCapturedFrame(const int32_t capture_id,
                            "render_time", video_frame.render_time_ms());
 
   capture_event_.Set();
+
+#ifdef ECOVATE_NO_FRAME_DROP
+  ViECaptureProcess();
+#endif
 }
 
 void ViECapturer::OnCaptureDelayChanged(const int32_t id,

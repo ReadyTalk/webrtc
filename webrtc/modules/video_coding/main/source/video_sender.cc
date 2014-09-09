@@ -367,9 +367,12 @@ int32_t VideoSender::AddVideoFrame(const I420VideoFrame& videoFrame,
   if (_nextFrameTypes[0] == kFrameEmpty) {
     return VCM_OK;
   }
+#ifndef ECOVATE_NO_FRAME_DROP
   if (_mediaOpt.DropFrame()) {
     return VCM_OK;
   }
+#endif
+
   _mediaOpt.UpdateContentData(contentMetrics);
   // TODO(pbos): Make sure setting send codec is synchronized with video
   // processing so frame size always matches.
