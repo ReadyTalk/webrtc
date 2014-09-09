@@ -22,12 +22,6 @@
 
 namespace ecovate {
 
-struct Listener {
-  virtual ~Listener() { }
-
-  virtual void onSendQueueEmpty() = 0;
-};
-
 Listener* listener = 0;
 
 } // namespace ecovate
@@ -158,11 +152,21 @@ PacedSender::PacedSender(Clock* clock,
       capture_time_ms_last_sent_(0),
       high_priority_packets_(new paced_sender::PacketList),
       normal_priority_packets_(new paced_sender::PacketList),
-      low_priority_packets_(new paced_sender::PacketList) {
+      low_priority_packets_(new paced_sender::PacketList),
+      listener_(ecovate::listener)
+{
+  if (listener_) {
+    listener_->incrementReferenceCount();
+  }
+
   UpdateBytesPerInterval(kMinPacketLimitMs);
 }
 
-PacedSender::~PacedSender() {}
+PacedSender::~PacedSender() {
+  if (listener_) {
+    listener_->decrementReferenceCount();
+  }
+}
 
 void PacedSender::Pause() {
   CriticalSectionScoped cs(critsect_.get());
@@ -384,8 +388,8 @@ bool PacedSender::ShouldSendNextPacket(paced_sender::PacketList** packet_list) {
     *packet_list = low_priority_packets_.get();
     return true;
   }
-  if (ecovate::listener) {
-    ecovate::listener->onSendQueueEmpty();
+  if (listener_) {
+    listener_->onSendQueueEmpty();
   }
   return false;
 }

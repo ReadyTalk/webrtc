@@ -346,6 +346,9 @@ void ViECapturer::OnIncomingCapturedFrame(const int32_t capture_id,
   TRACE_EVENT_ASYNC_BEGIN1("webrtc", "Video", video_frame.render_time_ms(),
                            "render_time", video_frame.render_time_ms());
 
+#ifdef ECOVATE_NO_FRAME_DROP
+  DeliverI420Frame(&video_frame);
+#else
   if (video_frame.native_handle() != NULL) {
     captured_frame_.reset(video_frame.CloneFrame());
   } else {
@@ -356,6 +359,7 @@ void ViECapturer::OnIncomingCapturedFrame(const int32_t capture_id,
   capture_event_.Set();
   overuse_detector_->FrameCaptured(captured_frame_->width(),
                                    captured_frame_->height());
+#endif
 }
 
 void ViECapturer::OnCaptureDelayChanged(const int32_t id,

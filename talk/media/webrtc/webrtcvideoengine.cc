@@ -1575,7 +1575,11 @@ WebRtcVideoMediaChannel::WebRtcVideoMediaChannel(
       send_fec_type_(-1),
       sending_(false),
       ratio_w_(0),
-      ratio_h_(0) {
+      ratio_h_(0),
+      listener_(ecovate::listener) {
+  if (listener_) {
+    listener_->incrementReferenceCount();
+  }
   engine->RegisterChannel(this);
 }
 
@@ -1608,6 +1612,10 @@ WebRtcVideoMediaChannel::~WebRtcVideoMediaChannel() {
   engine()->UnregisterChannel(this);
   if (worker_thread()) {
     worker_thread()->Clear(this);
+  }
+
+  if (listener_) {
+    listener_->decrementReferenceCount();
   }
 }
 
@@ -2152,6 +2160,9 @@ bool WebRtcVideoMediaChannel::StartSend() {
     if (!StartSend(send_channel)) {
       success = false;
     }
+  }
+  if (success && listener_) {
+    listener_->onSendMedia();
   }
   return success;
 }

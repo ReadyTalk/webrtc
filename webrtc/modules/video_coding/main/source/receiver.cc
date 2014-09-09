@@ -197,6 +197,7 @@ VCMEncodedFrame* VCMReceiver::FrameForDecoding(
       timing_->IncomingTimestamp(frame_timestamp, last_packet_time_ms);
     }
   }
+
   return frame;
 }
 

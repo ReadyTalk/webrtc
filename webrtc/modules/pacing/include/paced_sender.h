@@ -19,6 +19,24 @@
 #include "webrtc/system_wrappers/interface/thread_annotations.h"
 #include "webrtc/typedefs.h"
 
+namespace ecovate {
+
+struct Listener {
+  virtual ~Listener() { }
+
+  virtual void incrementReferenceCount() = 0;
+
+  virtual void decrementReferenceCount() = 0;
+
+  virtual void onSendQueueEmpty() = 0;
+
+  virtual void onSendMedia() = 0;
+};
+
+extern Listener* listener;
+
+} // namespace ecovate
+
 namespace webrtc {
 class Clock;
 class CriticalSectionWrapper;
@@ -157,6 +175,8 @@ class PacedSender : public Module {
       GUARDED_BY(critsect_);
   scoped_ptr<paced_sender::PacketList> low_priority_packets_
       GUARDED_BY(critsect_);
+  
+  ecovate::Listener* listener_;
 };
 }  // namespace webrtc
 #endif  // WEBRTC_MODULES_PACED_SENDER_H_
