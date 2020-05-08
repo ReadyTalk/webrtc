@@ -47,6 +47,12 @@
 #elif defined(__pnacl__)
 #define WEBRTC_ARCH_32_BITS
 #define WEBRTC_ARCH_LITTLE_ENDIAN
+#elif defined(__powerpc64__)
+#define WEBRTC_ARCH_LITTLE_ENDIAN
+#elif defined(__LITTLE_ENDIAN__)
+#define WEBRTC_ARCH_LITTLE_ENDIAN
+#elif defined(__BIG_ENDIAN__)
+#define WEBRTC_ARCH_BIG_ENDIAN
 #else
 #error Please add support for your architecture in typedefs.h
 #endif
